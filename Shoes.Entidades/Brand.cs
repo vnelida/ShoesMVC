@@ -6,6 +6,5 @@
         public string BrandName { get; set; } = null!;
         public ICollection<Shoe> Shoes { get; set; } = new List<Shoe>();
 
-        public int MyProperty { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Shoes.Entidades
 {
     public class Color
     {
-
+        public int MyProperty { get; set; }
         public int ColorId { get; set; }
         public string ColorName { get; set; } = null!;
         public ICollection<Shoe> Shoes { get; set; } = new List<Shoe>();
