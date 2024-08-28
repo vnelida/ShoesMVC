@@ -1,5 +1,5 @@
-﻿namespace Shoes.Entidades
-{
+﻿namespace Shoes.Entidades;
+
     public class Brand
     {
         public int BrandId { get; set; }
@@ -7,4 +7,3 @@
         public ICollection<Shoe> Shoes { get; set; } = new List<Shoe>();
 
     }
-}

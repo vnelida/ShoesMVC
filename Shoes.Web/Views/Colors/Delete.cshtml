@@ -1,0 +1,28 @@
+﻿@model Color
+
+@{
+	ViewData["Tittle"] = "Delete Color";
+}
+<form method="post" asp-controller="Colors" asp-action="Delete">
+	<input type="hidden" asp-for="ColorId" />
+	<h3 class="text-primary">Delete Color</h3>
+	<div class="border p-3 bg-white">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div class="mb-3">
+			<label asp-for="ColorName" class="form-control"></label>
+			<input asp-for="ColorName" disabled type="text" class=" form-control" />
+			
+		</div>
+
+		<button type="submit" class="btn btn-danger">
+			<i class="bi bi-floppy2"></i>
+			Delete
+		</button>
+		<a asp-controller="Colors" asp-action="Index" class="btn btn-info">
+			<i class="bi bi-backspace"></i>
+			Back
+		</a>
+
+	</div>
+
+</form>

@@ -1,0 +1,45 @@
+﻿@model ColorEditVm
+
+@{
+	ViewData["Tittle"] = "Edit Color";
+}
+<form method="post" asp-controller="Colors" asp-action="Edit">
+	<input type="hidden" asp-for="ColorId" />
+	<h3 class="text-primary"> Edit Color</h3>
+	<div class="border p-3 bg-white">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div class="mb-3">
+			<label asp-for="ColorName" class="form-control"></label>
+			<input asp-for="ColorName" type="text" class=" form-control" />
+			<span asp-validation-for="ColorName" class="text-danger"></span>
+		</div>
+
+		<button type="submit" class="btn btn-warning">
+			<i class="bi bi-floppy2"></i>
+			Save
+		</button>
+		<a asp-controller="Colors" asp-action="Index" class="btn btn-info">
+			<i class="bi bi-backspace"></i>
+			Back
+		</a>
+
+	</div>
+
+</form>
+@section Scripts {
+	<script>
+		tinymce.init({
+			selector: 'textarea',
+			plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+			tinycomments_mode: 'embedded',
+			tinycomments_author: 'Author name',
+			mergetags_list: [
+				{ value: 'First.Name', title: 'First Name' },
+				{ value: 'Email', title: 'Email' },
+			],
+			ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+		});
+	</script>
+}
+

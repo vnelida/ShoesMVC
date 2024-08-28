@@ -1,5 +1,6 @@
 ﻿using Shoes.Entidades;
 using Shoes.Entidades.Enums;
+using System.Linq.Expressions;
 
 namespace Shoes.Datos.Interfaces
 {
@@ -17,5 +18,5 @@ namespace Shoes.Datos.Interfaces
 		List<Color> GetListaOrdenada(Orden orden);
 		int GetCantidad();
 		List<Shoe>? GetShoe(Color? colorEnDB);
-	}
+    }
 }

@@ -55,9 +55,7 @@ namespace Shoes.Datos.Repositories
 
 		public List<Color> GetLista()
 		{
-			return _context.Colors
-				.OrderBy(c => c.ColorId)
-				.ToList();
+			return _context.Colors.OrderBy(c => c.ColorId).ToList();
 		}
 
 

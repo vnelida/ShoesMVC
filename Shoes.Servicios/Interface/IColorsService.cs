@@ -3,6 +3,7 @@ using Shoes.Entidades.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,5 +22,6 @@ namespace Shoes.Servicios.Interface
 		List<Color> GetListaOrdenada(Orden orden);
 		List<Color> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ);
 		List<Shoe>? GetShoes(Color? colorEnDB);
-	}
+
+    }
 }

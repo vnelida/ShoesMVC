@@ -100,19 +100,23 @@ namespace Shoes.Servicios.Servicios
         {
             try
             {
+                _unitOfWork.BeginTransaction();
                 if (brand.BrandId==0)
                 {
                     repository.Guardar(brand);
-                }
+				}
                 else
                 {
                     repository.Editar(brand);
-                }
-            }
+					
+				}
+				_unitOfWork.SaveChanges();
+				_unitOfWork.Commit();
+			}
             catch (Exception)
             {
-
-                throw;
+				_unitOfWork.Rollback();
+				throw;
             }
         }
     }

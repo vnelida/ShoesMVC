@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shoes.Datos;
 using Shoes.Datos.Interfaces;
@@ -10,34 +11,29 @@ namespace Shoes.IOC
 {
     public static class DI
     {
-        public static IServiceProvider ConfigurarServicio()
+        public static void ConfigurarServicio(IServiceCollection servicios, IConfiguration configuration)
         {
-            var servicio = new ServiceCollection();
 
-            servicio.AddScoped<IColorsService, ColorsService>();
-            servicio.AddScoped<IGenresService, GenresService>();
-            servicio.AddScoped<ISportsService, SportsService>();
-            servicio.AddScoped<IBrandsService, BrandsService>();
-            servicio.AddScoped<IShoesService, ShoesService>();
-			servicio.AddScoped<ISizeService, SizeService>();
+            servicios.AddScoped<IColorsService, ColorsService>();
+            servicios.AddScoped<IGenresService, GenresService>();
+            servicios.AddScoped<ISportsService, SportsService>();
+            servicios.AddScoped<IBrandsService, BrandsService>();
+            servicios.AddScoped<IShoesService, ShoesService>();
+			servicios.AddScoped<ISizeService, SizeService>();
 
-			servicio.AddScoped<ISizeRepository, SizeRepository>();
-			servicio.AddScoped<IShoesRepository, ShoesRepository>();
-            servicio.AddScoped<IColorsRepository, ColorsRepository>();
-            servicio.AddScoped<IGenresRepository, GenresRepository>();
-            servicio.AddScoped<ISportsRepository, SportsRepository>();
-            servicio.AddScoped<IBrandsRepository, BrandsRepository>();
+			servicios.AddScoped<ISizeRepository, SizeRepository>();
+			servicios.AddScoped<IShoesRepository, ShoesRepository>();
+            servicios.AddScoped<IColorsRepository, ColorsRepository>();
+            servicios.AddScoped<IGenresRepository, GenresRepository>();
+            servicios.AddScoped<ISportsRepository, SportsRepository>();
+            servicios.AddScoped<IBrandsRepository, BrandsRepository>();
 
-            servicio.AddScoped<IUnitOfWork, UnitOfWork>();
-            servicio.AddDbContext<ShoesDbContext>(optiones =>
+            servicios.AddScoped<IUnitOfWork, UnitOfWork>();
+            servicios.AddDbContext<ShoesDbContext>(optiones =>
             {
-                optiones.UseSqlServer(@"Data Source=.; 
-                        Initial Catalog=ShoesTP1.2024; 
-                        Trusted_Connection=true; 
-                        TrustServerCertificate=true;");
+                optiones.UseSqlServer(configuration.GetConnectionString("MyConn") );
             });
 
-            return servicio.BuildServiceProvider();
         }
     }
 }
