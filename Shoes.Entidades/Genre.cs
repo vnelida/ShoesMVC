@@ -9,7 +9,7 @@ namespace Shoes.Entidades
     public class Genre
     {
         public int GenreId { get; set; }
-        public string GnereName { get; set; } = null!;
+        public string GenreName { get; set; } = null!;
         public ICollection<Shoe> Shoes { get; set; } = new List<Shoe>();
     }
 }

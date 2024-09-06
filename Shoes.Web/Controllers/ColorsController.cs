@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Shoes.Entidades;
 using Shoes.Servicios.Interface;
 using Shoes.Web.ViewModels.Color;
-using X.PagedList;
+using Shoes.Web.ViewModels.Colors;
+using X.PagedList.Extensions;
 
 namespace Shoes.Web.Controllers
 {
@@ -14,14 +15,15 @@ namespace Shoes.Web.Controllers
 		public ColorsController(IColorsService? services, IMapper mapper)
 		{
 			_services = services ?? throw new ArgumentNullException(nameof(services));
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); ;
+			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper)); 
 		}
 		public IActionResult Index(int? page)
 		{
 			int pageNumber = page ?? 1;
 			int pageSize = 10;
-			var colors = _services?.GetLista().ToPagedList(pageNumber, pageSize);
-			return View(colors);
+			var colors = _services?.GetAll(orderBy: o => o.OrderBy(c => c.ColorName));
+			var colorsVm=_mapper?.Map<List<ColorListVm>>(colors).ToPagedList(pageNumber, pageSize);
+			return View(colorsVm);
 		}
 		public IActionResult UpSert(int? id)
 		{
@@ -37,7 +39,7 @@ namespace Shoes.Web.Controllers
 			}
 			else
 			{
-				Color? color = _services?.GetColorPorId(id.Value);
+				Color? color = _services?.Get(filter: c => c.ColorId == id);
 				if (color is null)
 				{
 					return NotFound();
@@ -68,7 +70,7 @@ namespace Shoes.Web.Controllers
 					ModelState.AddModelError(string.Empty, "Color already exist");
 					return View(colorVm);
 				}
-				_services.Guardar(color);
+				_services.Save(color);
 				TempData["success"] = "Record added/edited successfully";
 				return RedirectToAction("Index");
 			}
@@ -80,19 +82,42 @@ namespace Shoes.Web.Controllers
 			}
 		}
 
+
+		[HttpDelete]
 		public IActionResult Delete(int? id)
 		{
 			if (id is null || id == 0)
 			{
 				return NotFound();
 			}
-			Color? color = _services?.GetColorPorId(id.Value);
+			Color? color = _services?.Get(filter: c => c.ColorId == id);
 			if (color is null)
 			{
 				return NotFound();
 			}
-			return View(color);
+
+			try
+			{
+				if (_services is null || _mapper is null)
+				{
+					return StatusCode(StatusCodes.Status500InternalServerError, "The dependencies are not configured correctly");
+				}
+				if (_services.EstaRelacionado(color.ColorId))
+				{
+					return Json(new { success = false, message = "Related record. Delete denny" });
+				}
+				_services.Delete(color);
+				return Json(new { success = true, message = "Record delete successfully." });
+
+			}
+			catch (Exception)
+			{
+				return Json(new { success = false, message = "Failed to delete the item." });
+
+			}
 		}
+
+
 		[HttpPost]
 		public IActionResult Delete(int id)
 		{
@@ -100,17 +125,17 @@ namespace Shoes.Web.Controllers
 			{
 				return NotFound();
 			}
-			Color? color = _services?.GetColorPorId(id);
+			Color? color = _services?.Get(filter: c => c.ColorId == id);
 			if (color is null)
 			{
 				return NotFound();
 			}
-			if (_services.EstaRelacionado(color))
+			if (_services.EstaRelacionado(color.ColorId))
 			{
 				ModelState.AddModelError(string.Empty, "Record is associated with other and cannot be deleted ");
 				return View(color);
 			}
-			_services.Borrar(color);
+			_services.Delete(color);
 			TempData["success"] = "Record deleted successfully";
 			return RedirectToAction("Index");
 		}

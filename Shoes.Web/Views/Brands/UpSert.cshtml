@@ -1,11 +1,15 @@
-﻿@model BrandEditVm
+﻿@using Shoes.Web.ViewModels.Brands
+@model BrandEditVm
+
 @{
-	ViewData["Tittle"] = "New brand";
+	ViewData["Tittle"] = "Edit/New brand";
 }
-<form method="post" asp-controller="Brands" asp-action="Create">
+
+<form method="post" asp-controller="Brands" asp-action="UpSert">
 	<div class="border p-3 mt-4">
 		<div class="row pb-2">
-			<h2 class="text-primary"> Add Brand</h2>
+			<h2 class="text-primary"> @(Model.BrandId == 0 ? "Add New Brand" : "Edit Brand")</h2>
+			<input type="hidden" asp-for="BrandId" />
 		</div>
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 		<div class ="mb-3">
@@ -13,14 +17,27 @@
 			<input asp-for="BrandName" class=" form-control" />
 			<span asp-validation-for="BrandName" class="text-danger"></span>
 		</div>
-		<button type="submit" class="btn btn-success">
-			<i class="bi bi-floppy2"></i>
-			Save
-		</button>
-		<a asp-controller="Brands" asp-action="Index" class="btn btn-info">
-			<i class="bi bi-backspace"></i>
-			Back
-		</a>
+
+			@if (Model.BrandId == 0)
+			{
+				<button type="submit" class="btn btn-primary">
+					<i class="bi bi-floppy2-fill"></i>
+					Save
+				</button>
+			}
+			else
+			{
+				<button type="submit" class="btn btn-warning">
+					<i class="bi bi-pencil"></i>
+					Edit
+				</button>
+
+			}
+
+			<a asp-controller="Brands" asp-action="Index" class="btn btn-info">
+				<i class="bi bi-backspace"></i>
+				Back
+			</a>
 	</div>
 </form>
 @section Scripts {

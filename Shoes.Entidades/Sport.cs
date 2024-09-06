@@ -9,7 +9,7 @@ namespace Shoes.Entidades
     public class Sport
     {
 
-        public int SportiD { get; set; }
+        public int SportId { get; set; }
         public string SportName { get; set; } = null!;
         public ICollection<Shoe> Shoes { get; set; } =new List<Shoe>();
     }

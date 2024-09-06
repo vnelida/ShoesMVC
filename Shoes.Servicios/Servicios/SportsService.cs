@@ -6,6 +6,7 @@ using Shoes.Servicios.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,110 +14,72 @@ namespace Shoes.Servicios.Servicios
 {
     public class SportsService : ISportsService
     {
-        private readonly ISportsRepository repository;
+        private readonly ISportsRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-		public SportsService(ISportsRepository _repository, IUnitOfWork unitOfWork)
+		public SportsService(ISportsRepository repository, IUnitOfWork unitOfWork)
         {
-            repository = _repository;
-            _unitOfWork = unitOfWork;
-        }
-        public void Borrar(Sport sport)
-        {
+			_repository = repository ?? throw new ArgumentNullException("Dependencies not set");
+			_unitOfWork = unitOfWork ?? throw new ArgumentNullException("Dependencies not set");
+		}
+		public void Delete(Sport sport)
+		{
 			try
-            {
-				_unitOfWork.BeginTransaction();
-				repository.Borrar(sport);
-				_unitOfWork.Commit();
+			{
+				_unitOfWork!.BeginTransaction();
+				_repository!.Delete(sport);
+				_unitOfWork!.Commit();
+
 			}
-            catch (Exception)
-            {
+			catch (Exception)
+			{
+				_unitOfWork!.Rollback();
+				throw;
+			}
+		}
+
+		public bool IsRelated(int id)
+		{
+			return _repository!.IsRelated(id);
+		}
+
+		public bool Exist(Sport sport)
+		{
+			return _repository!.Exist(sport);
+		}
+
+		public Sport? Get(Expression<Func<Sport, bool>>? filter = null, string? propertiesNames = null, bool tracked = true)
+		{
+			return _repository!.Get(filter, propertiesNames, tracked);
+		}
+
+		public IEnumerable<Sport> GetAll(Expression<Func<Sport, bool>>? filter = null, Func<IQueryable<Sport>, IOrderedQueryable<Sport>>? orderBy = null, string? propertiesNames = null)
+		{
+			return _repository!.GetAll(filter, orderBy, propertiesNames);
+		}
+
+		public void Save(Sport sport)
+		{
+			try
+			{
+				_unitOfWork?.BeginTransaction();
+				if (sport.SportId == 0)
+				{
+					_repository?.Add(sport);
+				}
+				else
+				{
+					_repository?.Update(sport);
+				}
+				_unitOfWork?.Commit();
+
+			}
+			catch (Exception)
+			{
 				_unitOfWork?.Rollback();
 				throw;
-            }
-        }
-
-        public bool EstaRelacionado(Sport sport)
-        {
-            return repository.EstaRelacionado(sport);
-        }
-
-        public bool Existe(Sport sport)
-        {
-            return repository.Existe(sport);
-        }
-
-        public List<Sport> GetLista()
-        {
-            return repository.GetLista();
-        }
-
-        public Sport? GetSportPorId(int idEditar)
-        {
-            return repository.GetSportPorId(idEditar);
-        }
-
-        public Sport? GetSportPorNombre(string sportEdit)
-        {
-            return repository.GetSportPorNombre(sportEdit);
-        }
-
-        public void Guardar(Sport sport)
-        {
-            try
-            {
-                _unitOfWork.BeginTransaction();
-                if (sport.SportiD == 0)
-                {
-                    repository.Guardar(sport);
-                }
-                else
-                {
-                    repository.Editar(sport);
-                }
-                _unitOfWork.Commit();
-            }
-            catch (Exception)
-            {
-                _unitOfWork.Rollback();
-                throw;
-            }
-        }
-
-		public int GetCantidad()
-		{
-			try
-			{
-				return repository.GetCantidad();
-			}
-			catch (Exception)
-			{
-
-				throw;
 			}
 		}
 
-		public List<Sport> GetListaOrdenada(Orden orden)
-		{
-			try
-			{
-				return repository.GetListaOrdenada(orden);
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-		}
-
-		public List<Sport> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ)
-		{
-			return repository.GetListaPaginada(page, pageSize, orden);
-		}
-
-		public List<Shoe>? GetShoes(Sport sport)
-		{
-			return repository.GetShoe(sport);
-		}
 	}
 }

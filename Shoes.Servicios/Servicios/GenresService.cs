@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,112 +15,72 @@ namespace Shoes.Servicios.Servicios
 {
     public class GenresService : IGenresService
     {
-        private readonly IGenresRepository repository;
+        private readonly IGenresRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-		public GenresService(IGenresRepository _repository, IUnitOfWork unitOfWork)
+		public GenresService(IGenresRepository repository, IUnitOfWork unitOfWork)
         {
-            repository = _repository;
-            _unitOfWork = unitOfWork;
-                
+			_repository = repository ?? throw new ArgumentNullException("Dependencies not set");
+			_unitOfWork = unitOfWork ?? throw new ArgumentNullException("Dependencies not set");
         }
-        public void Borrar(Genre genre)
-        {
+		public void Delete(Genre genre)
+		{
 			try
-            {
-				_unitOfWork.BeginTransaction();
-				repository.Borrar(genre);
-				_unitOfWork.Commit();
+			{
+				_unitOfWork!.BeginTransaction();
+				_repository!.Delete(genre);
+				_unitOfWork!.Commit();
+
 			}
-            catch (Exception)
-            {
+			catch (Exception)
+			{
+				_unitOfWork!.Rollback();
+				throw;
+			}
+		}
+
+		public bool IsRelated(int id)
+		{
+			return _repository!.IsRelated(id);
+		}
+
+		public bool Exist(Genre genre)
+		{
+			return _repository!.Exist(genre);
+		}
+
+		public Genre? Get(Expression<Func<Genre, bool>>? filter = null, string? propertiesNames = null, bool tracked = true)
+		{
+			return _repository!.Get(filter, propertiesNames, tracked);
+		}
+
+		public IEnumerable<Genre> GetAll(Expression<Func<Genre, bool>>? filter = null, Func<IQueryable<Genre>, IOrderedQueryable<Genre>>? orderBy = null, string? propertiesNames = null)
+		{
+			return _repository!.GetAll(filter, orderBy, propertiesNames);
+		}
+
+		public void Save(Genre genre)
+		{
+			try
+			{
+				_unitOfWork?.BeginTransaction();
+				if (genre.GenreId == 0)
+				{
+					_repository?.Add(genre);
+				}
+				else
+				{
+					_repository?.Update(genre);
+				}
+				_unitOfWork?.Commit();
+
+			}
+			catch (Exception)
+			{
 				_unitOfWork?.Rollback();
 				throw;
-            }
-        }
-
-        public bool EstaRelacionado(Genre genre)
-        {
-            return repository.EstaRelacionado(genre);
-        }
-
-        public bool Existe(Genre genre)
-        {
-            return repository.Existe(genre);
-        }
-
-        public Genre? GetGenrePorId(int idEditar)
-        {
-            return repository.GetGenrePorId(idEditar);
-        }
-
-        public Genre GetGenrePorNombre(string genreN)
-        {
-            return repository.GetGenrePorNombre(genreN);
-        }
-
-        public List<Genre> GetLista()
-        {
-            return repository.GetLista();
-        }
-
-        public void Guardar(Genre genre)
-        {
-            try
-            {
-                _unitOfWork.BeginTransaction();
-                if (genre.GenreId == 0)
-                {
-                    repository.Guardar(genre);
-                }
-                else
-                {
-                    repository.Editar(genre);
-                  
-                }
-                _unitOfWork.Commit();
-            }
-            catch (Exception)
-            {
-                _unitOfWork.Rollback();
-                throw;
-            }
-        }
-
-		public int GetCantidad()
-		{
-			try
-			{
-				return repository.GetCantidad();
-			}
-			catch (Exception)
-			{
-
-				throw;
 			}
 		}
 
-		public List<Genre> GetListaOrdenada(Orden orden)
-		{
-			try
-			{
-				return repository.GetListaOrdenada(orden);
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-		}
-
-		public List<Genre> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ)
-		{
-			return repository.GetListaPaginada(page, pageSize, orden);
-		}
-
-		public List<Shoe>? GetShoes(Genre genre)
-		{
-			return repository.GetShoe(genre);
-		}
 	}
 }

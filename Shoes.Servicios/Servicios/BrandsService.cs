@@ -6,6 +6,7 @@ using Shoes.Servicios.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,111 +14,72 @@ namespace Shoes.Servicios.Servicios
 {
     public class BrandsService : IBrandsService
     {
-        private readonly IBrandsRepository repository;
+        private readonly IBrandsRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
-        public BrandsService(IBrandsRepository _repository,  IUnitOfWork unitOfWork)
+        public BrandsService(IBrandsRepository repository,  IUnitOfWork unitOfWork)
         {
-                repository = _repository;
-            _unitOfWork = unitOfWork;
-        }
-        public void Borrar(Brand brand)
-        {
-            try
-            {
-                _unitOfWork.BeginTransaction();
-                repository.Borrar(brand);
-                _unitOfWork.Commit();
-            }
-            catch (Exception)
-            {
-                _unitOfWork?.Rollback();
-                throw;
-            }
-        }
-
-        public bool EstaRelacionado(Brand brand)
-        {
-            return repository.EstaRelacionado(brand);
-        }
-
-        public bool Existe(Brand brand)
-        {
-            return repository.Existe(brand);
-        }
-
-        public Brand? GetBrandPorId(int idEditar)
-        {
-            return repository.GetBrandPorId(idEditar);
-        }
-
-        public Brand GetBrandPorNombre(string brandN)
-        {
-            return repository.GetBrandPorNombre(brandN);
+			_repository = repository ?? throw new ArgumentNullException("Dependencies not set");
+			_unitOfWork = unitOfWork ?? throw new ArgumentNullException("Dependencies not set");
 		}
 
-		public int GetCantidad()
+		public void Delete(Brand brand)
 		{
 			try
 			{
-				return repository.GetCantidad();
+				_unitOfWork!.BeginTransaction();
+				_repository!.Delete(brand);
+				_unitOfWork!.Commit();
+
 			}
 			catch (Exception)
 			{
-
+				_unitOfWork!.Rollback();
 				throw;
 			}
 		}
 
-		public List<Brand> GetLista()
+		public bool EstaRelacionado(int id)
+		{
+			return _repository!.EstaRelacionado(id);
+		}
+
+		public bool Existe(Brand brand)
         {
-            return repository.GetLista();
+            return _repository!.Existe(brand);
         }
 
-		public List<Brand> GetListaOrdenada(Orden orden)
+		public Brand? Get(Expression<Func<Brand, bool>>? filter = null, string? propertiesNames = null, bool tracked = true)
+		{
+			return _repository!.Get(filter, propertiesNames, tracked);
+		}
+
+		public IEnumerable<Brand> GetAll(Expression<Func<Brand, bool>>? filter = null, Func<IQueryable<Brand>, IOrderedQueryable<Brand>>? orderBy = null, string? propertiesNames = null)
+		{
+			return _repository!.GetAll(filter, orderBy, propertiesNames);
+		}
+
+		public void Save(Brand brand)
 		{
 			try
 			{
-				return repository.GetListaOrdenada(orden);
+				_unitOfWork?.BeginTransaction();
+				if (brand.BrandId == 0)
+				{
+					_repository?.Add(brand);
+				}
+				else
+				{
+					_repository?.Editar(brand);
+				}
+				_unitOfWork?.Commit();
+
 			}
 			catch (Exception)
 			{
-
+				_unitOfWork?.Rollback();
 				throw;
 			}
 		}
 
-		public List<Brand> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ)
-		{
-			return repository.GetListaPaginada(page, pageSize, orden);
-		}
-
-		public List<Shoe>? GetShoes(Brand brand)
-		{
-            return repository.GetShoe(brand);
-		}
-
-		public void Guardar(Brand brand)
-        {
-            try
-            {
-                _unitOfWork.BeginTransaction();
-                if (brand.BrandId==0)
-                {
-                    repository.Guardar(brand);
-				}
-                else
-                {
-                    repository.Editar(brand);
-					
-				}
-				_unitOfWork.SaveChanges();
-				_unitOfWork.Commit();
-			}
-            catch (Exception)
-            {
-				_unitOfWork.Rollback();
-				throw;
-            }
-        }
-    }
+	}
 }

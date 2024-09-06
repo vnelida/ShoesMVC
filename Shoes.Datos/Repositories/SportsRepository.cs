@@ -5,120 +5,30 @@ using Shoes.Entidades.Enums;
 
 namespace Shoes.Datos.Repositories
 {
-	public class SportsRepository : ISportsRepository
+	public class SportsRepository : GenericRepository<Sport>, ISportsRepository
 	{
-		private readonly ShoesDbContext context;
-		public SportsRepository(ShoesDbContext _context)
+		private readonly ShoesDbContext _db;
+		public SportsRepository(ShoesDbContext db) : base(db)
 		{
-			context = _context;
+			_db = db ?? throw new ArgumentNullException(nameof(db));
 		}
-		public void Borrar(Sport sport)
+		public bool Exist(Sport sport)
 		{
-			context.Sports.Remove(sport);
-		}
-
-		public void Editar(Sport sport)
-		{
-			context.Sports.Update(sport);
-		}
-
-		public bool EstaRelacionado(Sport sport)
-		{
-			return context.Shoes.Any(s => s.SportId == sport.SportiD);
-		}
-
-		public bool Existe(Sport sport)
-		{
-			if (sport.SportiD == 0)
+			if (sport.SportId == 0)
 			{
-				return context.Sports.Any(s => s.SportName == sport.SportName);
+				return _db!.Sports.Any(c => c.SportName == sport.SportName);
 			}
-			return context.Sports.Any(s => s.SportName == sport.SportName &&
-				s.SportiD != sport.SportiD);
+			return _db!.Sports.Any(t => t.SportName == sport.SportName && t.SportId != sport.SportId);
 		}
 
-		public List<Sport> GetLista()
+		public bool IsRelated(int id)
 		{
-			return context.Sports.AsNoTracking().ToList();
+			return _db!.Shoes.Any(s => s.SportId == id);
 		}
 
-		public Sport? GetSportPorId(int idEditar)
+		public void Update(Sport sport)
 		{
-			return context.Sports.SingleOrDefault(s => s.SportiD == idEditar);
-		}
-
-		public Sport? GetSportPorNombre(string sportN)
-		{
-			return context.Sports
-				.FirstOrDefault(s => s.SportName == sportN);
-		}
-
-		public void Guardar(Sport sport)
-		{
-			context.Sports.Add(sport);
-		}
-
-		public int GetCantidad()
-		{
-			return context.Sports.Count();
-		}
-
-
-		public List<Sport> GetListaOrdenada(Orden orden)
-		{
-			IQueryable<Sport> query = context.Sports
-										.Select(s => new Sport
-										{
-											SportiD = s.SportiD,
-											SportName = s.SportName,
-										});
-			switch (orden)
-			{
-				case Orden.AZ:
-					return query.OrderBy(s => s.SportName).ToList();
-				default:
-					return query.OrderByDescending(s => s.SportName).ToList();
-
-
-			}
-		}
-
-		public List<Sport> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ)
-		{
-			IQueryable<Sport> query = context.Sports
-										.Select(s => new Sport
-										{
-											SportiD = s.SportiD,
-											SportName = s.SportName,
-										});
-			switch (orden)
-			{
-				case Orden.AZ:
-					query = query.OrderBy(s => s.SportName);
-					break;
-				default:
-					query = query.OrderByDescending(s => s.SportName);
-					break;
-			}
-			return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-		}
-
-		public List<Shoe>? GetShoe(Sport sport)
-		{
-			if (sport != null)
-			{
-				context.Entry(sport)
-					.Collection(b => b.Shoes)
-					.Query()
-					.Include(s => s.Brand)
-					.Include(s => s.ColorN)
-					.Include(s => s.Sport)
-					.Include(s => s.Genre)
-					.Load();
-				var shoes = sport.Shoes.ToList();
-				return shoes;
-			}
-			return null;
+			_db!.Sports.Update(sport);
 		}
 	}
 }

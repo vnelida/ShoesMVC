@@ -62,7 +62,7 @@ namespace Shoes.Datos
 
             modelBuilder.Entity<Genre>(entity =>
             {
-                entity.HasIndex(g => g.GnereName).IsUnique();
+                entity.HasIndex(g => g.GenreName).IsUnique();
             });
 
             modelBuilder.Entity<Sport>(entity =>

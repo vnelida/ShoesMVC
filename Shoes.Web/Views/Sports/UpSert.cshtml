@@ -1,24 +1,38 @@
-﻿@model ColorEditVm
+﻿@model SportsEditVm
 
 @{
-	ViewData["Tittle"] = "Edit Color";
+	ViewData["Tittle"] = "Add/Edit Sport";
 }
-<form method="post" asp-controller="Colors" asp-action="Edit">
-	<input type="hidden" asp-for="ColorId" />
-	<h3 class="text-primary"> Edit Color</h3>
+
+<form method="post" asp-controller="Sports" asp-action="Upsert">
+
+	<h3 class="text-primary">@(Model.SportId == 0 ? "Add New Sport" : "Edit Sport") </h3>
+	<input type="hidden" asp-for="SportId" />
 	<div class="border p-3 bg-white">
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 		<div class="mb-3">
-			<label asp-for="ColorName" class="form-control"></label>
-			<input asp-for="ColorName" type="text" class=" form-control" />
-			<span asp-validation-for="ColorName" class="text-danger"></span>
+			<label asp-for="SportName" class="form-control"></label>
+			<input asp-for="SportName" type="text" class=" form-control" />
+			<span asp-validation-for="SportName" class="text-danger"></span>
 		</div>
 
-		<button type="submit" class="btn btn-warning">
-			<i class="bi bi-floppy2"></i>
-			Save
-		</button>
-		<a asp-controller="Colors" asp-action="Index" class="btn btn-info">
+		@if (Model.SportId == 0)
+		{
+			<button type="submit" class="btn btn-primary">
+				<i class="bi bi-floppy2-fill"></i>
+				Save
+			</button>
+		}
+		else
+		{
+			<button type="submit" class="btn btn-warning">
+				<i class="bi bi-pencil"></i>
+				Edit
+			</button>
+
+		}
+
+		<a asp-controller="Sports" asp-action="Index" class="btn btn-info">
 			<i class="bi bi-backspace"></i>
 			Back
 		</a>
@@ -26,7 +40,11 @@
 	</div>
 
 </form>
+
 @section Scripts {
+	@{
+		<partial name="_ValidationScriptsPartial" />
+	}
 	<script>
 		tinymce.init({
 			selector: 'textarea',
@@ -42,4 +60,3 @@
 		});
 	</script>
 }
-

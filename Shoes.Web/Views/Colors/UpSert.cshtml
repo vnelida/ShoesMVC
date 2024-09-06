@@ -1,8 +1,10 @@
-﻿@model ColorEditVm
+﻿@using Shoes.Web.ViewModels.Color
+@model ColorEditVm
 
 @{
 	ViewData["Tittle"] = "Add/Edit Color";
 }
+
 <form method="post" asp-controller="Colors" asp-action="Upsert">
 
 	<h3 class="text-primary">@(Model.ColorId == 0 ?"Add New Color":"Edit Color") </h3>

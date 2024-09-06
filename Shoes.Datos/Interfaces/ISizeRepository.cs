@@ -7,19 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shoes.Datos.Interfaces
 {
-	public interface ISizeRepository
+	public interface ISizeRepository:IGenericRepository<Size>
 	{
-		void Agregar(Size size);
-		void Borrar(Size size);
-		void Editar(Size size);
-		bool EstaRelacionado(Size size);
-		bool Existe(Size size);
-		int GetCantidad();
-		List<Size> GetLista();
-		List<Size> GetListaPaginada(int page, int pageSize);
-		List<Shoe> GetShoe(Size? sizeEnDB);
-		Size? GetSizePorId(int id);
-		Size? GetSizePorIDxShoe(int id, bool incluyeShoe=false);
-		Size GetSizetPorNombre(string sizeN);
+		void Update(Size genre);
+		bool Exist(Size genre);
+		bool IsRelated(int id);
 	}
 }

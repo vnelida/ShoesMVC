@@ -18,123 +18,69 @@ namespace Shoes.Servicios.Servicios
 		private readonly IUnitOfWork _unitOfWork;
 		public ColorsService(IColorsRepository repository, IUnitOfWork unitOfWork)
         {
-                _repository = repository;
-            _unitOfWork = unitOfWork;
-        }
-        public void Borrar(Color color)
-        {
-            try
-            {
-				_unitOfWork.BeginTransaction();
-				_repository.Borrar(color);
-				_unitOfWork.Commit();
+			_repository = repository ?? throw new ArgumentNullException("Dependencies not set");
+			_unitOfWork = unitOfWork ?? throw new ArgumentNullException("Dependencies not set");
+		}
+
+		public void Delete(Color color)
+		{
+			try
+			{
+				_unitOfWork!.BeginTransaction();
+				_repository!.Delete(color);
+				_unitOfWork!.Commit();
+
 			}
-            catch (Exception)
-            {
+			catch (Exception)
+			{
+				_unitOfWork!.Rollback();
+				throw;
+			}
+		}
+
+		public bool EstaRelacionado(int id)
+		{
+			return _repository!.EstaRelacionado(id);
+		}
+
+		public bool Existe(Color color)
+		{
+			return _repository!.Existe(color);
+		}
+
+		public Color? Get(Expression<Func<Color, bool>>? filter = null, string? propertiesNames = null, bool tracked = true)
+		{
+			return _repository!.Get(filter, propertiesNames, tracked);
+		}
+
+		public IEnumerable<Color> GetAll(Expression<Func<Color, bool>>? filter = null, Func<IQueryable<Color>, IOrderedQueryable<Color>>? orderBy = null, string? propertiesNames = null)
+		{
+			return _repository!.GetAll(filter, orderBy, propertiesNames);
+		}
+
+		
+
+		public void Save(Color color)
+		{
+			try
+			{
+				_unitOfWork?.BeginTransaction();
+				if (color.ColorId == 0)
+				{
+					_repository?.Add(color);
+				}
+				else
+				{
+					_repository?.Editar(color);
+				}
+				_unitOfWork?.Commit();
+
+			}
+			catch (Exception)
+			{
 				_unitOfWork?.Rollback();
 				throw;
-            }
-        }
-
-        public bool EstaRelacionado(Color color)
-        {
-            return _repository.EstaRelacionado(color);
-        }
-
-        public bool Existe(Color color)
-        {
-            try
-            {
-                return _repository.Existe(color);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-       
-
-        public int GetCantidad()
-		{
-			try
-			{
-				return _repository.GetCantidad();
-			}
-			catch (Exception)
-			{
-
-				throw;
 			}
 		}
-
-		public Color? GetColorPorId(int idEditar)
-        {
-            try
-            {
-                return _repository.GetColorPorId(idEditar);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public Color? GetColorPorNombre(string color)
-        {
-            return _repository.GetColorPorNombre(color);
-        }
-
-        public List<Color> GetLista()
-        {
-            return _repository.GetLista();
-        }
-
-		public List<Color> GetListaOrdenada(Orden orden)
-		{
-			try
-			{
-				return _repository.GetListaOrdenada(orden);
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-		}
-
-		public List<Color> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ)
-		{
-			return _repository.GetListaPaginada(page, pageSize, orden);
-		}
-
-		public List<Shoe>? GetShoes(Color? colorEnDB)
-		{
-			return _repository.GetShoe(colorEnDB);
-		}
-
-		public void Guardar(Color color)
-        {
-            try
-            {
-                _unitOfWork.BeginTransaction();
-                if (color.ColorId == 0)
-                {
-                    _repository.Agregar(color);
-                }
-                else
-                {
-                    _repository.Editar(color);
-                }
-                _unitOfWork.Commit();
-            }
-            catch (Exception)
-            {
-                _unitOfWork.Rollback();
-                throw;
-            }
-        }
-    }
+	}
 }

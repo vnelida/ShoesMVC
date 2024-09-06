@@ -3,6 +3,7 @@ using Shoes.Entidades.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,17 +11,12 @@ namespace Shoes.Servicios.Interface
 {
     public interface IBrandsService
     {
-        List<Brand> GetLista();
-        void Guardar(Brand brand);
-        void Borrar(Brand brand);
-        bool Existe(Brand brand);
-        Brand? GetBrandPorId(int idEditar);
-        bool EstaRelacionado(Brand brand);
-        Brand GetBrandPorNombre(string brandN);
-		int GetCantidad();
-        List <Shoe>? GetShoes(Brand brand);
-		List<Brand> GetListaOrdenada(Orden orden);
-		List<Brand> GetListaPaginada(int page, int pageSize, Orden? orden = Orden.AZ);
+		IEnumerable<Brand> GetAll(Expression<Func<Brand, bool>>? filter = null, Func<IQueryable<Brand>, IOrderedQueryable<Brand>>? orderBy = null, string? propertiesNames = null);
+		Brand? Get(Expression<Func<Brand, bool>>? filter = null, string? propertiesNames = null, bool tracked = true);
+		bool Existe(Brand brand);
+		bool EstaRelacionado(int id);
+		void Save(Brand brand);
+		void Delete(Brand brand);
 
 	}
 }
