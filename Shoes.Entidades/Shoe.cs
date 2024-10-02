@@ -21,8 +21,8 @@ namespace Shoes.Entidades
         public Sport? Sport { get; set; }
         public int ColorId { get; set; }
         public Color? ColorN { get; set; }
-
-		public ICollection<ShoeSize> ShoesSizes { get; set; } = new List<ShoeSize>();
+        public string? ImageUrl { get; set; }
+        public ICollection<ShoeSize> ShoesSizes { get; set; } = new List<ShoeSize>();
 
 
 	}

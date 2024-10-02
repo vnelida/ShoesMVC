@@ -1,0 +1,102 @@
+﻿@model IPagedList<BrandListVm>
+@using X.PagedList
+@{
+	ViewData["Tittle"] = "Brands list";
+}
+
+<div class="row w-50 mb-4">
+	<div class="col-6">
+		<h3>List of Brands</h3>
+	</div>
+	<div class ="col-6 text-end">
+		<a asp-controller="Brands"asp-action="UpSert" class="btn btn-primary">
+			<i class="bi bi-plus-circle"></i> New
+		</a>
+	</div>
+</div>
+
+ <form method="get" class="form-inline" asp-action="Index">
+	 <div class="d-flex flex-row align-items-center">
+		 <div class="col-auto mx-1">
+			 <label for="pageSize">Show:</label>
+		 </div>
+		 <div class="col-auto mx-2">
+			 <select class="form-select" id="pageSize" name="pageSize" onchange="this.form.submit()" style="width:78px">
+				@{
+					var options = new List<int> { 5, 10, 15, 20 };
+					foreach (var option in options)
+					{
+						if (ViewBag.currentPageSize==option)
+						{
+							<option selected value="@option">@option</option>
+						}
+						else
+						{
+							<option value="@option">@option</option>
+						}
+					}
+				}
+			 </select>
+		 </div>	 
+
+		 <div class="col-auto mx-2" style="width:200px;" >
+			 <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Search by..." value="@ViewBag.currentSearchTerm"/>
+		 </div>
+		 <div class="col-auto d-flex">
+			 <button type="submit" class="btn btn-primary mx-2">
+				 <i class="bi bi-list"></i> Search 
+			 </button>
+			 <button type="submit" class="btn btn-secondary" id="viewAll" name="viewAll" value="true">
+				 <i class="bi bi-list"></i> View All
+			 </button>
+		 </div>
+	 </div>
+		 
+ </form>
+
+<table class="table table-bordered table-hover w-50 mt-3">
+	<thead>
+		<tr>
+			<th style="width:30%">Brands</th>
+			<th style="width:20%">Shoes Qty.</th>
+			<th style="width:50%">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model.Any())
+		{
+			foreach (var item in Model)
+			{
+				<tr id="@item.BrandId">
+					<td>@item.BrandName</td>
+					<td>@item.ShoesQuantity</td>
+
+					<td>
+						<a onclick="Delete('/Brands/Delete/@item.BrandId',@item.BrandId,'@item.BrandName.Replace("'"," \\'")')" class="btn btn-danger">
+							<i class="bi bi-trash-fill"></i>Delete
+						</a>
+						<a asp-controller="Brands" asp-action="UpSert" asp-route-id="@item.BrandId" class="btn btn-warning">
+							<i class="bi bi-pencil-square"></i>Edit</a>
+						<a class="btn btn-info" asp-controller="Brands" asp-action="Details" asp-route-id="@item.BrandId">
+							<i class="bi bi-card-list"></i>
+							Details
+						</a>
+					</td>
+				</tr>
+			}
+		}
+		else
+		{
+			<tr>
+				<td>Record not found</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<partial name="_Pager" model="@Model" />
+</div>
+@section Scripts{
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script src="~/js/common.js"></script>
+}

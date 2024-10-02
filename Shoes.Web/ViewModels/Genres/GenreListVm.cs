@@ -6,6 +6,9 @@ namespace Shoes.Web.ViewModels.Genres
 	{
 		public int GenreId { get; set; }
 		[DisplayName("Genre")]
-		public string GenreName { get; set; } = null!;
-	}
+		public string GenreName { get; set; } = null!; 
+		[DisplayName("Shoes Qty.")]
+		public int ShoesQuantity { get; set; }
+
+    }
 }

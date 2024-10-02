@@ -7,5 +7,7 @@ namespace Shoes.Web.ViewModels.Colors
 		public int ColorId { get; set; }
 		[DisplayName("Color")]
 		public string ColorName { get; set; } = null!;
+		[DisplayName("Shoes Qty.")]
+		public int ShoesQuantity { get; set; }
 	}
 }

@@ -18,7 +18,18 @@ namespace Shoes.Web.ViewModels.Shoes
 		[DisplayName("Description")]
 
 		public string Description { get; set; } = null!;
-		[Required(ErrorMessage = "{0} is required")]
+
+
+		public string? ImageUrl {  get; set; }
+        public IFormFile? ImageFile { get; set; }
+        [Display(Name="Remove Image")]
+        public bool RemoveImage { get; set; }
+        public bool Suspended { get; set; }
+
+
+
+
+        [Required(ErrorMessage = "{0} is required")]
 		[DisplayName("Price")]
 
 		public decimal Price { get; set; }
@@ -40,13 +51,13 @@ namespace Shoes.Web.ViewModels.Shoes
 		[DisplayName("Color")]
 		public int ColorId { get; set; }
 		[ValidateNever]
-		public IEnumerable<SelectListItem> Colors { get; set; } = null!;
+		public List<SelectListItem> Colors { get; set; } = null!;
 		[ValidateNever]
-		public IEnumerable<SelectListItem> Brands { get; set; } = null!;
+		public List<SelectListItem> Brands { get; set; } = null!;
 		[ValidateNever]
-		public IEnumerable<SelectListItem> Genres { get; set; } = null!;
+		public List<SelectListItem> Genres { get; set; } = null!;
 		[ValidateNever]
-		public IEnumerable<SelectListItem> Sports { get; set; } = null!;
+		public List<SelectListItem> Sports { get; set; } = null!;
 
 	}
 }

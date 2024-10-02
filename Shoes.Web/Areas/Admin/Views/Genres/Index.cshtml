@@ -1,0 +1,68 @@
+﻿@model IPagedList<GenreListVm>
+@using X.PagedList
+@using X.PagedList;
+@{
+	ViewData["Tittle"] = "Genres List";
+}
+
+<div class="row w-50 mb-4">
+	<div class="col-6">
+		<h3>Genres List</h3>
+	</div>
+	<div class="col-6 text-end">
+		<a asp-controller="Genres" asp-action="UpSert" class="btn btn-primary">
+			<i class="bi bi-plus-circle"></i> New
+		</a>
+	</div>
+</div>
+
+<table class="table table-bordered table-hover w-50">
+	<thead>
+		<tr>
+			<th>Genre Name</th>
+			<th>Shoes Qty.</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model.Any())
+		{
+			@foreach (var item in Model)
+			{
+				<tr id="@item.GenreId">
+					<td>@item.GenreName</td>
+					<td>@item.ShoesQuantity</td>
+
+					<td>
+						<a onclick="Delete('/Genres/Delete/@item.GenreId',@item.GenreId,'@item.GenreName')" class="btn btn-danger">
+							<i class="bi bi-trash-fill"></i>Delete
+						</a>
+						<a asp-controller="Genres" asp-action="UpSert" asp-route-id="@item.GenreId" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
+						<a class="btn btn-info" asp-controller="Genres" asp-action="Details" asp-route-id="@item.GenreId">
+							<i class="bi bi-card-list"></i>
+							Details
+						</a>
+
+					</td>
+				</tr>
+			}
+
+		}
+		else
+		{
+			<tr>
+				<td colspan="2">No items added yet</td>
+			</tr>
+		}
+
+
+	</tbody>
+</table>
+<partial name="_Pager" model="@Model" />
+
+@section Scripts {
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script src="~/js/common.js"></script>
+}
+

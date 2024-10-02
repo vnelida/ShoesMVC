@@ -7,5 +7,8 @@ namespace Shoes.Web.ViewModels.Brands
 		public int BrandId { get; set; }
 		[DisplayName("Brand")]
 		public string BrandName { get; set; } = null!;
+		[DisplayName("Shoes Qty.")]
+		public int ShoesQuantity { get; set; }
+
 	}
 }

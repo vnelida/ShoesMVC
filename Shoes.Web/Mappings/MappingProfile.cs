@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Shoes.Entidades;
-using Shoes.Entidades.Dto;
 using Shoes.Web.ViewModels.Brands;
 using Shoes.Web.ViewModels.Color;
 using Shoes.Web.ViewModels.Colors;
@@ -32,18 +31,21 @@ namespace Shoes.Web.Mappings
 		private void LoadBrandsMapping()
 		{
 			CreateMap<Brand, BrandEditVm>().ReverseMap();
-			CreateMap<Brand, BrandListVm>();
-		}
+			CreateMap<Brand, BrandListVm>(); 
+			CreateMap<Brand, BrandDetailsVm>();
+        }
 
 		private void LoadColorsMapping()
 		{
 			CreateMap<Color, ColorEditVm>().ReverseMap();
 			CreateMap<Color, ColorListVm>();
+			CreateMap<Color, ColorDetailsVm>();
 		}
 		private void LoadGenresMapping()
 		{
 			CreateMap<Genre, GenreEditVm>().ReverseMap();
 			CreateMap<Genre, GenreListVm>();
+			CreateMap<Genre, GenreDetailsVm>();
 		}
 		private void LoadSportsMapping()
 		{
@@ -60,7 +62,7 @@ namespace Shoes.Web.Mappings
 			   .ForMember(dest => dest.Sport,
 			   opt => opt.MapFrom(t => t.Sport.SportName))
 			   .ForMember(dest => dest.Genre,
-			   opt => opt.MapFrom(g => g.Genre.GenreName));
+			   opt => opt.MapFrom(src => src.Genre.GenreName));
 			CreateMap<Shoe, ShoeEditVm>().ReverseMap();
 		}
 	}

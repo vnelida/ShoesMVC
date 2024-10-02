@@ -31,7 +31,7 @@ namespace Shoes.Web
 
 			app.MapControllerRoute(
 				name: "default",
-				pattern: "{controller=Home}/{action=Index}/{id?}");
+				pattern:"{area=Customer}/{controller=Home}/{action=Headline}/{id?}");
 
 			app.Run();
 		}

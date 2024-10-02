@@ -1,0 +1,62 @@
+﻿@model IPagedList<SportListVm>
+@using X.PagedList
+@using X.PagedList;
+@{
+	ViewData["Tittle"] = "Sports List";
+}
+
+<div class="row w-50 mb-4">
+	<div class="col-6">
+		<h3>Sports List</h3>
+	</div>
+	<div class="col-6 text-end">
+		<a asp-controller="Sports" asp-action="UpSert" class="btn btn-primary">
+			<i class="bi bi-plus-circle"></i> New
+		</a>
+	</div>
+</div>
+
+<table class="table table-bordered table-hover w-50">
+	<thead>
+		<tr>
+			<th>Sport Name</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@if (Model.Any())
+		{
+			@foreach (var item in Model)
+			{
+				<tr id="@item.SportId">
+					<td>@item.SportName</td>
+					<td>
+						<a onclick="Delete('/Sports/Delete/@item.SportId',@item.SportId,'@item.SportName')" class="btn btn-danger">
+							<i class="bi bi-trash-fill"></i>
+							Delete
+						</a>
+						<a asp-controller="Sports" asp-action="UpSert" asp-route-id="@item.SportId" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
+					</td>
+				</tr>
+			}
+
+		}
+		else
+		{
+			<tr>
+				<td colspan="2">No items added yet</td>
+			</tr>
+		}
+
+
+	</tbody>
+</table>
+<div>
+	<partial name="_Pager" model="@Model" />
+</div>
+@section Scripts {
+	<script src="~/lib/jquery/dist/jquery.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script src="~/js/common.js"></script>
+}
+

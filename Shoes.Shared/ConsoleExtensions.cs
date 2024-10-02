@@ -150,10 +150,10 @@ namespace Shoes.Shared
                         Console.WriteLine($"{color.ColorId} - {color.ColorName}");
                         break;
                     case Genre genre:
-                        Console.WriteLine($"{genre.GenreId} - {genre.GnereName}");
+                        Console.WriteLine($"{genre.GenreId} - {genre.GenreName}");
                         break;
                     case Sport sport:
-                        Console.WriteLine($"{sport.SportiD} - {sport.SportName}");
+                        Console.WriteLine($"{sport.SportId} - {sport.SportName}");
                         break;
                     case Brand brand:
                         Console.WriteLine($"{brand.BrandId} - {brand.BrandName}");

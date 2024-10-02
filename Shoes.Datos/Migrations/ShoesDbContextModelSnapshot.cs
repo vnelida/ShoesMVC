@@ -33,6 +33,9 @@ namespace Shoes.Datos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("BrandId");
 
                     b.HasIndex("BrandName")
@@ -91,13 +94,13 @@ namespace Shoes.Datos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenreId"));
 
-                    b.Property<string>("GnereName")
+                    b.Property<string>("GenreName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GenreId");
 
-                    b.HasIndex("GnereName")
+                    b.HasIndex("GenreName")
                         .IsUnique();
 
                     b.ToTable("Genres");
@@ -123,6 +126,9 @@ namespace Shoes.Datos.Migrations
 
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -195,17 +201,17 @@ namespace Shoes.Datos.Migrations
 
             modelBuilder.Entity("Shoes.Entidades.Sport", b =>
                 {
-                    b.Property<int>("SportiD")
+                    b.Property<int>("SportId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SportiD"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SportId"));
 
                     b.Property<string>("SportName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("SportiD");
+                    b.HasKey("SportId");
 
                     b.HasIndex("SportName")
                         .IsUnique();
