@@ -64,6 +64,14 @@ namespace Shoes.Web.Mappings
 			   .ForMember(dest => dest.Genre,
 			   opt => opt.MapFrom(src => src.Genre.GenreName));
 			CreateMap<Shoe, ShoeEditVm>().ReverseMap();
-		}
+			CreateMap<Shoe, ShoeHomeIndexVm>().
+				ForMember(dest => dest.ColorN, opt => opt.MapFrom(c => c.ColorN.ColorName))
+			   .ForMember(dest => dest.Brand, opt => opt.MapFrom(b => b.Brand.BrandName))
+			   .ForMember(dest => dest.Sport, opt => opt.MapFrom(t => t.Sport.SportName))
+			   .ForMember(dest => dest.Genre, opt => opt.MapFrom(src => src.Genre.GenreName))
+			   .ForMember(dest => dest.Price, opt => opt.MapFrom(p => p.Price))
+			   .ForMember(dest => dest.CashPrice, opt => opt.MapFrom(p => p.Price * 0.9m));
+
+        }
 	}
 }

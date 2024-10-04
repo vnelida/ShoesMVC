@@ -11,9 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shoes.Servicios", "Shoes.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shoes.IOC", "Shoes.IOC\Shoes.IOC.csproj", "{939F6FC6-6B33-472C-92E4-62F08D78811F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shoes.Shared", "Shoes.Shared\Shoes.Shared.csproj", "{3D4C4E51-4FBD-4B87-8147-380764BD88E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoes.Web", "Shoes.Web\Shoes.Web.csproj", "{B42BAFEA-E511-4EB6-A194-7CF69C7CAA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shoes.Web", "Shoes.Web\Shoes.Web.csproj", "{B42BAFEA-E511-4EB6-A194-7CF69C7CAA28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{939F6FC6-6B33-472C-92E4-62F08D78811F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{939F6FC6-6B33-472C-92E4-62F08D78811F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{939F6FC6-6B33-472C-92E4-62F08D78811F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D4C4E51-4FBD-4B87-8147-380764BD88E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D4C4E51-4FBD-4B87-8147-380764BD88E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D4C4E51-4FBD-4B87-8147-380764BD88E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D4C4E51-4FBD-4B87-8147-380764BD88E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B42BAFEA-E511-4EB6-A194-7CF69C7CAA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B42BAFEA-E511-4EB6-A194-7CF69C7CAA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B42BAFEA-E511-4EB6-A194-7CF69C7CAA28}.Release|Any CPU.ActiveCfg = Release|Any CPU

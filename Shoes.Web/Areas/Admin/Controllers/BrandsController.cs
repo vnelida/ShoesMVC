@@ -112,6 +112,15 @@ namespace Shoes.Web.Areas.Admin.Controllers
                     {
                         return NotFound();
                     }
+                    if (brand.ImageUrl != null)
+                    {
+                        var filePath = Path.Combine(wwwWebRoot, brand.ImageUrl.TrimStart('/'));
+                        ViewData["ImageExist"] = System.IO.File.Exists(filePath);
+                    }
+                    else
+                    {
+                        ViewData["ImageExist"] = false;
+                    }
                     brandVm = _mapper!.Map<BrandEditVm>(brand);
                     return View(brandVm);
 

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shoes.Entidades;
 using Shoes.Servicios.Interface;
 using Shoes.Web.ViewModels.Shoes;
+using System.Drawing.Drawing2D;
+using System;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -17,9 +20,10 @@ namespace Shoes.Web.Areas.Admin.Controllers
         private readonly IColorsService? _colorService;
         private readonly ISportsService? _sportService;
         private readonly IGenresService? _genreService;
+        private readonly IWebHostEnvironment? _webHostEnvironment;
         private readonly IMapper? _mapper;
 
-        public ShoesController(IShoesService? service, IMapper? mapper, IBrandsService brandsService, IColorsService colorService, ISportsService sportService, IGenresService genreService)
+        public ShoesController(IShoesService? service, IMapper? mapper, IBrandsService brandsService, IColorsService colorService, ISportsService sportService, IGenresService genreService, IWebHostEnvironment? webHostEnvironment)
         {
             _service = service ?? throw new ArgumentNullException(nameof(_service));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(_service));
@@ -27,6 +31,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
             _colorService = colorService;
             _sportService = sportService;
             _genreService = genreService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index(int? page, string? searchTerm = null, bool viewAll = false, int pageSize = 10, int? filterId = null, string? orderBy = "Model")
@@ -151,11 +156,23 @@ namespace Shoes.Web.Areas.Admin.Controllers
             {
                 try
                 {
+                    string? wwwWebRoot = _webHostEnvironment!.WebRootPath;
+
                     Shoe? shoe = _service!.Get(filter: c => c.ShoeId == id);
                     if (shoe == null)
                     {
                         return NotFound();
                     }
+                    if (shoe.ImageUrl != null)
+                    {
+                        var filePath = Path.Combine(wwwWebRoot, shoe.ImageUrl.TrimStart('/'));
+                        ViewData["ImageExist"] = System.IO.File.Exists(filePath);
+                    }
+                    else
+                    {
+                        ViewData["ImageExist"] = false; 
+                    }
+
                     shoeVm = _mapper!.Map<ShoeEditVm>(shoe);
                     shoeVm.Brands = GetBrands();
                     shoeVm.Colors = GetColors();
@@ -233,6 +250,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
 
                 if (_service.Exist(shoe))
                 {
+
                     ModelState.AddModelError(string.Empty, "Record already exist");
 
                     shoeVm.Brands =
@@ -276,6 +294,47 @@ namespace Shoes.Web.Areas.Admin.Controllers
                         .ToList();
 
                     return View(shoeVm);
+                }
+                string? wwwWebRoot = _webHostEnvironment!.WebRootPath;
+
+                if (!shoeVm.RemoveImage)
+                {
+                    if (shoeVm.ImageFile != null)
+                    {
+                        var permittedExtensions = new string[] { ".png", ".jpg", ".jpeg" };
+                        var fileExtension = Path.GetExtension(shoeVm.ImageFile.FileName);
+                        if (!permittedExtensions.Contains(fileExtension))
+                        {
+                            ModelState.AddModelError(string.Empty, "File not allowed");
+                            return View(shoeVm);
+
+                        }
+                        if (shoe.ImageUrl != null)
+                        {
+                            string oldFilePath = Path.Combine(wwwWebRoot, shoe.ImageUrl.TrimStart('/'));
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
+
+                        string fileName = $"{Guid.NewGuid()}{Path.GetExtension(shoeVm.ImageFile.FileName)}";
+                        string pathName = Path.Combine(wwwWebRoot, "images", "shoeImages", fileName);
+                        using (var fileStream = new FileStream(pathName, FileMode.Create))
+                        {
+                            shoeVm.ImageFile.CopyTo(fileStream);
+                        }
+                        shoe.ImageUrl = $"/images/shoeImages/{fileName}";
+                    }
+                }
+                else
+                {
+                    string oldFilePath = Path.Combine(wwwWebRoot, shoe.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                    shoe.ImageUrl = null;
                 }
 
                 _service.Save(shoe);

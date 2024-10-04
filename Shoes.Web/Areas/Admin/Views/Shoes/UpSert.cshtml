@@ -1,10 +1,15 @@
 ﻿@model ShoeEditVm
 @{
     ViewData["Title"] = "New/Edit City";
+    bool imageExist = false;
+    if (ViewData["imageExist"] != null)
+    {
+        imageExist = (bool)ViewData["imageExist"]!;
+    }
 }
 
 
-<form method="post" asp-action="UpSert" class="w-100">
+<form method="post" asp-action="UpSert" enctype="multipart/form-data" class="w-100">
 
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="@Model.ShoeId" />
@@ -13,6 +18,9 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group row">
             <h2 class="text-info pl-3">@(Model.ShoeId == 0 ? "Add Shoe" : "Edit Shoe")</h2>
+            <input type="hidden" asp-for="ShoeId" />
+            <input type="hidden" asp-for="ImageUrl" />
+
         </div>
         <div class="row">
             <div class="col-8">
@@ -61,11 +69,36 @@
                         </select>
                         <span asp-validation-for="GenreId" class="text-danger"></span>
                     </div>
+                    <div class="form-group py-2">
+                        <label class="form-label" asp-for="ImageUrl"></label>
+                        <input type="file" class="form-control" asp-for="ImageFile" />
+                    </div>
                 </div>
-            </div>
-            <div class="col-4 text-center">
-                <img src="@Model.ImageUrl" style="width:300px;height:300px; border:1px solid" />
-            </div>
+                <div class="col-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        if (imageExist)
+                        {
+                            <img src="@Model.ImageUrl" style="width:300px;height:300px; border:1px solid" />
+                            <div class="form-group py-2">
+                                <label class="form-label">Remove Image</label>
+                                <input type="checkbox" id="RemoveImage" name="RemoveImage" value="true" />
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="~/images/defaultImage.jpg" style="width:300px;height:300px; border:1px solid" />
+
+                        }
+
+                    }
+                    else
+                    {
+                        <img src="~/images/defaultImage.jpg" style="width:300px;height:300px; border:1px solid" />
+                    }
+
+                </div>
+            </div>            
         </div>
         
 
