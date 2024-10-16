@@ -1,141 +1,146 @@
 ﻿@model ShoeFilterVm
 @using X.PagedList
 @{
-	ViewData["Tittle"] = "Shoes list";
+    ViewData["Tittle"] = "Shoes list";
 }
 
 <div class="row w-50 mb-4">
-	<div class="col-6">
-		<h3>Shoes List</h3>
-	</div>
-	<div class="col-6 text-end">
-		<a asp-controller="Shoes" asp-action="UpSert" class="btn btn-primary">
-			<i class="bi bi-plus-circle"></i> New
-		</a>
-	</div>
+    <div class="col-6">
+        <h3>Shoes List</h3>
+    </div>
+    <div class="col-6 text-end">
+        <a asp-controller="Shoes" asp-action="UpSert" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New
+        </a>
+    </div>
 </div>
 
 <form method="get" class="form-inline" asp-action="Index">
-	<div class="d-flex flex-row align-items-center">
-		<div class="col-auto mx-1">
-			<label for="pageSize">Show:</label>
-		</div>
-		<div class="col-auto mx-2">
-			<partial name="_SelectPages" model="@ViewBag.currentPageSize" />
-		</div>
-			<div class="col-auto mx-2">
-				Brand
-			</div>
-		<div class="col-auto mx-2" style="width:200px;">
-			<select class="form-select" name="filterId" id="filterId">
-				<option disable selected value="0">Select Brand</option>
-				@{
-					foreach (var item in Model.Brands!)
-					{
-						// <option selected="@(ViewBag.currentFilterId==int.Parse(item.Value)?"selected":null)" value="@item.Value">@item.Text</option>
+    <div class="d-flex flex-row align-items-center">
+        <div class="col-auto mx-1">
+            <label for="pageSize">Show:</label>
+        </div>
+        <div class="col-auto mx-2">
+            <partial name="_SelectPages" model="@ViewBag.currentPageSize" />
+        </div>
+        <div class="col-auto mx-2">
+            Brand
+        </div>
+        <div class="col-auto mx-2" style="width:200px;">
+            <select class="form-select" name="filterId" id="filterId">
+                <option disable selected value="0">Select Brand</option>
+                @{
+                    foreach (var item in Model.Brands!)
+                    {
+                        // <option selected="@(ViewBag.currentFilterId==int.Parse(item.Value)?"selected":null)" value="@item.Value">@item.Text</option>
 
-						if (ViewBag.currentFilterBrandId==int.Parse(item.Value))
-						{
-							<option selected value="@item.Value">@item.Text</option>
-						}else
-						{
-							<option value="@item.Value">@item.Text</option>
-						}
-					}
-				}
-			</select>
-		</div>
+                        if (ViewBag.currentFilterBrandId == int.Parse(item.Value))
+                        {
+                            <option selected value="@item.Value">@item.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
 
-		<div class="col-auto">
-			Order by:
-		</div>
-		<div class="col-auto">
-			<select class="form-select" id="orderBy" name="orderBy" onchange="this.form.submit()">
-				<option selected="@(ViewBag.currentOrderBy=="Model"?"selected":null)" value="Model">Model</option>
-				<option selected="@(ViewBag.currentOrderBy=="Price"?"selected":null)" value="Price">Price</option>
-				<option selected="@(ViewBag.currentOrderBy=="Sport"?"selected":null)" value="Sports">Sport</option>
-			</select>
-		</div>
+        <div class="col-auto">
+            Order by:
+        </div>
+        <div class="col-auto">
+            <select class="form-select" id="orderBy" name="orderBy" onchange="this.form.submit()">
+                <option selected="@(ViewBag.currentOrderBy=="Model"?"selected":null)" value="Model">Model</option>
+                <option selected="@(ViewBag.currentOrderBy=="Price"?"selected":null)" value="Price">Price</option>
+                <option selected="@(ViewBag.currentOrderBy=="Sport"?"selected":null)" value="Sports">Sport</option>
+            </select>
+        </div>
 
-		<div class="col-auto mx-2" style="width:200px;">
-			<input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Search by..." value="@ViewBag.currentSearchTerm" />
-		</div>
-		<div class="col-auto d-flex">
-			<button type="submit" class="btn btn-primary mx-2">
-				<i class="bi bi-search"></i> Search
-			</button>
-			<button type="submit" class="btn btn-secondary" id="viewAll" name="viewAll" value="true">
-				<i class="bi bi-list"></i> View All
-			</button>
-		</div>
-	</div>
+        <div class="col-auto mx-2" style="width:200px;">
+            <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Search by..." value="@ViewBag.currentSearchTerm" />
+        </div>
+        <div class="col-auto d-flex">
+            <button type="submit" class="btn btn-primary mx-2">
+                <i class="bi bi-search"></i> Search
+            </button>
+            <button type="submit" class="btn btn-secondary" id="viewAll" name="viewAll" value="true">
+                <i class="bi bi-list"></i> View All
+            </button>
+        </div>
+    </div>
 
 </form>
 
 
 <table class="table table-bordered table-hover w-100 mt-3">
-	<thead>
-		<tr>
-			<th style="width: 15%">Model</th>
-			<th style="width: 20%">Description</th>
-			<th style="width: 10%">Brand</th>
-			<th style="width: 10%">Color</th>
-			<th style="width: 10%">Sport</th>
-			<th style="width: 10%">Genre</th>
-			<th style="width: 10%">Price</th>
-			<th style="width: 15%">Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		@if (Model.Shoes!.Any())
-		{
-			foreach (var item in Model.Shoes!)
-			{
-				<tr id="@item.ShoeId">
-					<td>
-						@item.Model
-					</td>
-					<td>
-						@item.Description
-					</td>
-					<td>
-						@item.Brand
-					</td>
-					<td>
-						@item.ColorN
-					</td>
-					<td>
-						@item.Sport
-					</td>
-					<td>
-						@item.Genre
-					</td>
-					<td style ="text-align:right">
-						@item.Price.ToString("C2")
-					</td>
-					<td>
-						<a onclick="Delete('/Shoes/Delete/@item.ShoeId',@item.ShoeId,'@item.Model')" class="btn btn-danger">
-							<i class="bi bi-trash-fill"></i>
-							Delete
-						</a>
-						<a asp-controller="Shoes" asp-action="UpSert" asp-route-id="@item.ShoeId" class="btn btn-warning">
-							<i class="bi bi-pencil-square"></i>Edit
-						</a>
-					</td>
-				</tr>
-			}
-		}
-		else
-		{
-			<tr>
-				<td>Record not found</td>
-			</tr>
-		}
-	</tbody>
+    <thead>
+        <tr>
+            <th style="width: 12%">Model</th>
+            <th style="width: 18%">Description</th>
+            <th style="width: 10%">Brand</th>
+            <th style="width: 10%">Color</th>
+            <th style="width: 10%">Sport</th>
+            <th style="width: 10%">Genre</th>
+            <th style="width: 8%">Price</th>
+            <th style="width: 29%">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Shoes!.Any())
+        {
+            foreach (var item in Model.Shoes!)
+            {
+                <tr id="@item.ShoeId">
+                    <td>
+                        @item.Model
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Brand
+                    </td>
+                    <td>
+                        @item.ColorN
+                    </td>
+                    <td>
+                        @item.Sport
+                    </td>
+                    <td>
+                        @item.Genre
+                    </td>
+                    <td style="text-align:right">
+                        @item.Price.ToString("C2")
+                    </td>
+                    <td>
+                        <a onclick="Delete('/Admin/Shoes/Delete/@item.ShoeId',@item.ShoeId,'@item.Model.Replace("'"," \\'")')" class="btn btn-danger">
+                            <i class="bi bi-trash-fill"></i>
+                            Delete
+                        </a>
+                        <a asp-controller="Shoes" asp-action="UpSert" asp-route-id="@item.ShoeId" class="btn btn-warning">
+                            <i class="bi bi-pencil-square"></i>Edit
+                        </a>
+                        <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ShoeId" asp-route-returnUrl="@(Context.Request.Path+Context.Request.QueryString)" class="btn btn-info">
+                            <i class="bi bi-card-list"></i>Sizes
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>Record not found</td>
+            </tr>
+        }
+    </tbody>
 </table>
-<partial name="_Pager" model="@Model.Shoes"/>
+<partial name="_Pager" model="@Model.Shoes" />
 @section Scripts {
-	<script src="~/lib/jquery/dist/jquery.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-	<script src="~/js/common.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="~/js/common.js"></script>
 }

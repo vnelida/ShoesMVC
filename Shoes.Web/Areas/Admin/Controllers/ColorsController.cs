@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Shoes.Entidades;
 using Shoes.Servicios.Interface;
-using Shoes.Servicios.Servicios;
 using Shoes.Web.ViewModels.Color;
 using Shoes.Web.ViewModels.Colors;
-using Shoes.Web.ViewModels.Genres;
 using Shoes.Web.ViewModels.Shoes;
-using System;
 using X.PagedList.Extensions;
 
 namespace Shoes.Web.Areas.Admin.Controllers

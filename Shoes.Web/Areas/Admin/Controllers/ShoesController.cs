@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shoes.Entidades;
 using Shoes.Servicios.Interface;
 using Shoes.Web.ViewModels.Shoes;
-using System.Drawing.Drawing2D;
-using System;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -15,6 +12,8 @@ namespace Shoes.Web.Areas.Admin.Controllers
     [Area("Admin")]
     public class ShoesController : Controller
     {
+        private readonly ISizeService _sizeSerivce;
+        private readonly IShoeSizeService _shoeSizeService;
         private readonly IShoesService? _service;
         private readonly IBrandsService? _brandsService;
         private readonly IColorsService? _colorService;
@@ -23,7 +22,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
         private readonly IWebHostEnvironment? _webHostEnvironment;
         private readonly IMapper? _mapper;
 
-        public ShoesController(IShoesService? service, IMapper? mapper, IBrandsService brandsService, IColorsService colorService, ISportsService sportService, IGenresService genreService, IWebHostEnvironment? webHostEnvironment)
+        public ShoesController(IShoesService? service, IMapper? mapper, IBrandsService brandsService, IColorsService colorService, ISportsService sportService, IGenresService genreService, IWebHostEnvironment? webHostEnvironment, IShoeSizeService shoeSizeService, ISizeService sizeSerivce)
         {
             _service = service ?? throw new ArgumentNullException(nameof(_service));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(_service));
@@ -32,8 +31,10 @@ namespace Shoes.Web.Areas.Admin.Controllers
             _sportService = sportService;
             _genreService = genreService;
             _webHostEnvironment = webHostEnvironment;
+            _shoeSizeService = shoeSizeService;
+            _sizeSerivce = sizeSerivce;
         }
-
+        
         public IActionResult Index(int? page, string? searchTerm = null, bool viewAll = false, int pageSize = 10, int? filterId = null, string? orderBy = "Model")
         {
             int pageNumber = page ?? 1;
@@ -74,13 +75,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
             var shoeFilterVm = new ShoeFilterVm
             {
                 Shoes = shoesVm!.ToPagedList(pageNumber, pageSize),
-                Brands = _brandsService!
-                    .GetAll(orderBy: q => q.OrderBy(c => c.BrandName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.BrandName,
-                        Value = c.BrandId.ToString()
-                    }).ToList()
+                Brands = GetBrands()
 
             };
 
@@ -134,6 +129,8 @@ namespace Shoes.Web.Areas.Admin.Controllers
                     }).ToList();
 
         }
+
+       
         public IActionResult Upsert(int? id)
         {
             ShoeEditVm shoeVm;
@@ -142,11 +139,8 @@ namespace Shoes.Web.Areas.Admin.Controllers
             {
                 shoeVm = new ShoeEditVm();
                 shoeVm.Brands = GetBrands();
-
                 shoeVm.Colors = GetColors();
-
                 shoeVm.Sports = GetSports();
-
                 shoeVm.Genres = GetGenres();
                 return View(shoeVm);
 
@@ -170,7 +164,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
                     }
                     else
                     {
-                        ViewData["ImageExist"] = false; 
+                        ViewData["ImageExist"] = false;
                     }
 
                     shoeVm = _mapper!.Map<ShoeEditVm>(shoe);
@@ -196,45 +190,10 @@ namespace Shoes.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                shoeVm.Brands =
-                    _brandsService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.BrandName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.BrandName,
-                        Value = c.BrandId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Colors =
-                    _colorService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.ColorName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.ColorName,
-                        Value = c.ColorId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Sports =
-                    _sportService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.SportName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.SportName,
-                        Value = c.SportId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Genres =
-                    _genreService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.GenreName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.GenreName,
-                        Value = c.GenreId.ToString()
-                    })
-                    .ToList();
+                shoeVm.Brands = GetBrands();
+                shoeVm.Colors = GetColors();
+                shoeVm.Sports = GetSports();
+                shoeVm.Genres = GetGenres();
 
                 return View(shoeVm);
             }
@@ -253,45 +212,10 @@ namespace Shoes.Web.Areas.Admin.Controllers
 
                     ModelState.AddModelError(string.Empty, "Record already exist");
 
-                    shoeVm.Brands =
-                        _brandsService!
-                        .GetAll(orderBy: o => o.OrderBy(c => c.BrandName))
-                        .Select(c => new SelectListItem
-                        {
-                            Text = c.BrandName,
-                            Value = c.BrandId.ToString()
-                        })
-                        .ToList();
-
-                    shoeVm.Colors =
-                        _colorService!
-                        .GetAll(orderBy: o => o.OrderBy(c => c.ColorName))
-                        .Select(c => new SelectListItem
-                        {
-                            Text = c.ColorName,
-                            Value = c.ColorId.ToString()
-                        })
-                        .ToList();
-
-                    shoeVm.Sports =
-                        _sportService!
-                        .GetAll(orderBy: o => o.OrderBy(c => c.SportName))
-                        .Select(c => new SelectListItem
-                        {
-                            Text = c.SportName,
-                            Value = c.SportId.ToString()
-                        })
-                        .ToList();
-
-                    shoeVm.Genres =
-                        _genreService!
-                        .GetAll(orderBy: o => o.OrderBy(c => c.GenreName))
-                        .Select(c => new SelectListItem
-                        {
-                            Text = c.GenreName,
-                            Value = c.GenreId.ToString()
-                        })
-                        .ToList();
+                    shoeVm.Brands = GetBrands();
+                    shoeVm.Colors = GetColors();
+                    shoeVm.Sports = GetSports();
+                    shoeVm.Genres = GetGenres();
 
                     return View(shoeVm);
                 }
@@ -345,45 +269,10 @@ namespace Shoes.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError(string.Empty, "An error occurred while editing the record.");
 
-                shoeVm.Brands =
-                    _brandsService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.BrandName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.BrandName,
-                        Value = c.BrandId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Colors =
-                    _colorService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.ColorName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.ColorName,
-                        Value = c.ColorId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Sports =
-                    _sportService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.SportName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.SportName,
-                        Value = c.SportId.ToString()
-                    })
-                    .ToList();
-
-                shoeVm.Genres =
-                    _genreService!
-                    .GetAll(orderBy: o => o.OrderBy(c => c.GenreName))
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.GenreName,
-                        Value = c.GenreId.ToString()
-                    })
-                    .ToList();
+                shoeVm.Brands = GetBrands();
+                shoeVm.Colors = GetColors();
+                shoeVm.Sports = GetSports();
+                shoeVm.Genres = GetGenres();
 
                 return View(shoeVm);
             }
@@ -397,7 +286,7 @@ namespace Shoes.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            Shoe? shoe = _service?.Get(filter: c => c.ShoeId == id);
+            Shoe? shoe = _service?.Get(filter: c => c.ShoeId == id, propertiesNames: "Brand,ColorN,Sport,Genre");
             if (shoe is null)
             {
                 return NotFound();
@@ -423,5 +312,138 @@ namespace Shoes.Web.Areas.Admin.Controllers
 
             }
         }
+
+        public IActionResult Details(int? id,string? returnUrl)
+        {
+            if (id == null || id.Value == 0)
+            {
+                return NotFound();
+            }
+                        
+            Shoe? shoe = _service!.Get(
+                filter: s => s.ShoeId == id,
+                propertiesNames: "Brand,ColorN,Sport,Genre,ShoesSizes.SizeN"
+            );
+                       
+            if (shoe is null)
+            {
+                return NotFound();
+            }
+
+            ShoeHomeDetailsVm shoeVm = _mapper!.Map<ShoeHomeDetailsVm>(shoe);
+
+            shoeVm.ShoeSize = shoe.ShoesSizes.Select(ss => new ShoeSize
+            {
+                ShoeSizeId = ss.ShoeSizeId,
+                ShoeId = ss.ShoeId,
+                ShoeN = ss.ShoeN,
+                SizeId = ss.SizeId,
+                SizeN = ss.SizeN,
+                QuantityInStock = ss.QuantityInStock
+            }).ToList();
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(shoeVm);
+        }
+        public IActionResult UpsertShoeSize(int shoeId, string? returnUrl)
+        {
+            var shoe = _service!.Get(s => s.ShoeId == shoeId);
+
+            if (shoe == null)
+            {
+                return NotFound();
+            }
+
+            ShoeSizeVm shoeSizeVm;
+                shoeSizeVm = new ShoeSizeVm
+                {
+                    ShoeId = shoeId
+                };
+                var shoeSize = _shoeSizeService.Get(ss => ss.ShoeId == shoeId);
+                if (shoeSize == null)
+                {
+                    return NotFound();
+                }
+                shoeSizeVm = _mapper!.Map<ShoeSizeVm>(shoeSize);
+             shoeSizeVm.Sizes = _sizeSerivce!.GetAll()
+                    .Select(c => new SelectListItem
+                    {
+                        Text = c.SizeNumber.ToString(),
+                        Value = c.SizeId.ToString()
+                    }).ToList();
+            ViewBag.ReturnUrl= returnUrl;
+            return View(shoeSizeVm);
+        }
+        [HttpPost]
+        public IActionResult UpsertShoeSize(int shoeId, string returnUrl, List<int> sizeIds, int quantityInStock)
+        {
+
+            if (sizeIds == null || !sizeIds.Any())
+            {
+                return BadRequest("No sizes selected.");
+            }
+
+            foreach (var sizeId in sizeIds)
+                {
+                    var newShoeSize = new ShoeSize
+                    {
+                        ShoeId = shoeId,
+                        SizeId = sizeId,
+                        QuantityInStock = quantityInStock 
+                    };
+
+                    
+                    _shoeSizeService.Save(newShoeSize);
+                }
+            if (returnUrl != null)
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Shoes");
+
+            }
+            
+        }
+
+
+        //public IActionResult UpsertShoeSize(ShoeSizeVm shoeSizeVm)
+        //{
+        //    //if (!ModelState.IsValid)
+        //    //{
+        //    //    shoeSizeVm.Sizes = _shoeSizeService!.GetAll()
+        //    //        .Select(c => new SelectListItem
+        //    //        {
+        //    //            Text = c.SizeN.SizeNumber.ToString(),
+        //    //            Value = c.SizeId.ToString()
+        //    //        }).ToList();
+        //    //    return View(shoeSizeVm);
+        //    //}
+
+        //    if (shoeSizeVm.ShoeSizeId == 0)
+        //    {
+        //        var newShoeSize = new ShoeSize
+        //        {
+        //            ShoeId = shoeSizeVm.ShoeId,
+        //            SizeId = shoeSizeVm.SizeId,
+        //            QuantityInStock = shoeSizeVm.QuantityInStock
+        //        };
+        //        _shoeSizeService.Save(newShoeSize);
+        //    }
+        //    else
+        //    {
+        //        var existingShoeSize = _shoeSizeService.Get(ss => ss.ShoeSizeId == shoeSizeVm.ShoeSizeId);
+        //        if (existingShoeSize == null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        existingShoeSize.SizeId = shoeSizeVm.SizeId;
+        //        existingShoeSize.QuantityInStock = shoeSizeVm.QuantityInStock;
+        //        _shoeSizeService.Save(existingShoeSize);
+        //    }
+        //    return RedirectToAction("Index", "Shoes");
+        //}
     }
 }

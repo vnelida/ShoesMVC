@@ -1,6 +1,5 @@
 ﻿@model IPagedList<GenreListVm>
 @using X.PagedList
-@using X.PagedList;
 @{
 	ViewData["Tittle"] = "Genres List";
 }
@@ -34,7 +33,7 @@
 					<td>@item.ShoesQuantity</td>
 
 					<td>
-						<a onclick="Delete('/Genres/Delete/@item.GenreId',@item.GenreId,'@item.GenreName')" class="btn btn-danger">
+						<a onclick="Delete('/Admin/Genres/Delete/@item.GenreId',@item.GenreId,'@item.GenreName')" class="btn btn-danger">
 							<i class="bi bi-trash-fill"></i>Delete
 						</a>
 						<a asp-controller="Genres" asp-action="UpSert" asp-route-id="@item.GenreId" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>

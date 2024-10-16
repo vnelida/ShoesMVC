@@ -1,6 +1,6 @@
 ﻿@model ShoeEditVm
 @{
-    ViewData["Title"] = "New/Edit City";
+    ViewData["Title"] = "Shoes";
     bool imageExist = false;
     if (ViewData["imageExist"] != null)
     {
@@ -74,33 +74,35 @@
                         <input type="file" class="form-control" asp-for="ImageFile" />
                     </div>
                 </div>
-                <div class="col-4 text-center">
-                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+
+            </div>    
+            <div class="col-4 text-center">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    if (imageExist)
                     {
-                        if (imageExist)
-                        {
-                            <img src="@Model.ImageUrl" style="width:300px;height:300px; border:1px solid" />
-                            <div class="form-group py-2">
-                                <label class="form-label">Remove Image</label>
-                                <input type="checkbox" id="RemoveImage" name="RemoveImage" value="true" />
-                            </div>
-                        }
-                        else
-                        {
-                            <img src="~/images/defaultImage.jpg" style="width:300px;height:300px; border:1px solid" />
-
-                        }
-
+                        <img src="@Model.ImageUrl" style="width:300px;height:300px; border:1px solid" />
+                        <div class="form-group py-2">
+                            <label class="form-label">Remove Image</label>
+                            <input type="checkbox" id="RemoveImage" name="RemoveImage" value="true" />
+                        </div>
                     }
                     else
                     {
                         <img src="~/images/defaultImage.jpg" style="width:300px;height:300px; border:1px solid" />
+
                     }
 
-                </div>
-            </div>            
+                }
+                else
+                {
+                    <img src="~/images/defaultImage.jpg" style="width:300px;height:300px; border:1px solid" />
+                }
+
+            </div>
+            
         </div>
-        
+
 
         @if (Model.ShoeId == 0)
         {
@@ -130,33 +132,4 @@
         <partial name="_ValidationScriptsPartial" />
     }
 
-    <script>
-        $(document).ready(function () {
-            $("#CountryId").change(function () {
-                $("#StateId").empty();
-                $("#StateId").append('<option value="0">[Select State]</option>');
-
-                // console.log('Country ID:', $("#CountryId").val());
-                // debugger;
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetStates", "Cities", new { area = "Admin" })',
-                    dataType: 'json',
-                    data: {
-                        countryId: $("#CountryId").val()
-                    },
-                    success: function (states) {
-                        console.log("States received: ", states);
-                        $.each(states, function (i, state) {
-                            $("#StateId").append('<option value="' + state.stateId + '">' + state.stateName + '</option>');
-                        });
-                    },
-                    error: function (ex) {
-                        alert('Error trying to load the states.' + ex);
-                    }
-                });
-                return false;
-            });
-        });
-    </script>
 }

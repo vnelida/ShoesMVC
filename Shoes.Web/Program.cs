@@ -7,9 +7,10 @@ namespace Shoes.Web
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                   .AddNewtonsoftJson();
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 			DI.ConfigurarServicio(builder.Services, builder.Configuration);
 			builder.Services.AddAutoMapper(typeof(Program).Assembly);
 			var app = builder.Build();
@@ -32,8 +33,7 @@ namespace Shoes.Web
 			app.MapControllerRoute(
 				name: "default",
 				pattern:"{area=Customer}/{controller=Home}/{action=Headline}/{id?}");
-
-			app.Run();
+            app.Run();
 		}
 	}
 }

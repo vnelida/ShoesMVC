@@ -1,0 +1,74 @@
+﻿@model ShoeHomeDetailsVm
+@{
+    Layout = null;
+}
+<div id="@Model.ShoeId" tabindex="-1" aria-labelledby="shoeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                @* <h2 class="modal-title fs-5" id="shoeDetailsModalLabel">@Model.Model</h2> *@
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="container-img ratio ratio-4x3">
+                            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="Product image">
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <p class="h1">@Model.Model</p>
+                        <i class="h6">@Model.Description</i>
+                        <div class="mt-5 mb-5">
+                            <del>@Model.Price.ToString("C2")</del>
+                            <p style="font-size: 24px; font-weight: normal;">@Model.CashPrice.ToString("C2")</p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="me-3">
+                                <!-- Espaciado entre los grupos -->
+                                <label for="productColor" class="form-label">Colors: </label>
+                                <div class="btn-group btn-sm pb-3" role="group">
+                                    <input type="radio" class="btn-check" name="color-choice" id="productColor" @* value="@Model.ColorN" checked *@>
+                                    <label class="btn btn-outline-secondary" for="productColor">@Model.ColorN</label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="productSize" class="form-label">Sizes: </label>
+                                <div class="btn-group flex-wrap" role="group">
+                                    @foreach (var size in Model.ShoeSize)
+                                    {
+                                        <div class="me-2 mb-2" role="group">
+                                            <input type="radio" class="btn-check" name="size-choice" id="@size.SizeN.SizeNumber" autocomplete="off">
+                                            <label class="btn btn-outline-secondary" for="@size.SizeN.SizeNumber">@size.SizeN.SizeNumber</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3 mb-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-dark border border-secondary">Cantidad</span>
+                                    <input type="number" value="1" class="form-control bg-white text-dark border border-secondary" min="1" aria-label="Cantidad" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <input type="radio" class="btn-check" name="size-choice" id="xxxl" disabled autocomplete="off">
+                                <label class="btn btn-outline-secondary w-100 disabled" for="xxxl">XXXL</label>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary mt-4 w-100">Add to bag</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

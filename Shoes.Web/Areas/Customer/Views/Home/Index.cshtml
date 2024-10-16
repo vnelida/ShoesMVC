@@ -1,6 +1,12 @@
-﻿@model IEnumerable<ShoeHomeIndexVm>
+﻿@model IPagedList<ShoeHomeIndexVm>
+@using X.PagedList
+
 @{
     ViewData["Title"] = "Home Page";
+    string ShrinkShoeName(string shoeName)
+    {
+        return shoeName.Length >= 17 ? $"{shoeName.Substring(0, 15)}..." : shoeName;
+    }
 }
 <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
     <h2 class="text-2xl font-bold tracking-tight text-gray-900">All</h2>
@@ -11,30 +17,58 @@
             <div class=" col-lg-3 col-sm-6 mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="row p-2">
                     <div class="col-12 p1">
-                        
-                            <div class="bg-white border p-4 rounded-lg shadow-lg group relative">
-                                <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                                    <img src="@shoe.ImageUrl" alt="@shoe.Model" class="h-48 w-full object-cover object-center " style="width: 200px; height: 200px; object-fit: cover;">
+                        <div class="bg-white border p-0 rounded-lg shadow-lg group relative">
+                            <div class="spect-w-1 aspect-h-1 border-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-7 b-l">
+                                <img src="@shoe.ImageUrl" alt="@shoe.Model" class="h-48 w-full object-cover object-center" style="width: 277px; height: 250px; object-fit: cover;">
+                            </div>
+                            <div class="mt-4 flex justify-between mt-4 flex justify-between p-4">
+                                <div>
+                                    <h3 class="text-sm text-gray-700">
+                                        <a href="#" class="text-black">
+                                            <span aria-hidden="true" class="absolute inset-0"></span>
+                                            @ShrinkShoeName(shoe.Model)
+                                        </a>
+                                    </h3>
+                                    <p class="mt-1 text-sm text-gray-500">@shoe.Brand</p>
                                 </div>
-                                <div class="mt-4 flex justify-between">
-                                    <div>
-                                        <h3 class="text-sm text-gray-700">
-                                        <a href="#" class= "text-black">
-                                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                                @shoe.Model
-                                            </a>
-                                        </h3>
-                                        <p class="mt-1 text-sm text-gray-500">@shoe.Brand</p>
-                                    </div>
-                                    <p class="text-sm font-medium text-gray-900">$@shoe.Price</p>
+                                <p class="text-sm font-medium text-gray-900">$@shoe.Price</p>
+                                <div style="text-align: right;">
+                                    <a href="#" onclick="openDetailsShoe(@shoe.ShoeId)" class="button is-light border-0">Details</a>
                                 </div>
                             </div>
-                        
+                        </div>
                     </div>
                 </div>
-                
+
             </div>
-            
+
         }
+        <partial name="_Pager" model="@Model" />
+    </div>       
+</div>
+
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="shoeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            @* mostrar modallll *@
+        </div>
     </div>
 </div>
+
+<script>
+    function openDetailsShoe(shoeId) {
+        $.ajax({
+            url: '@Url.Action("Details", "Home")',
+            type: 'GET',
+            data: { id: shoeId },
+            success: function (data) {
+                $('#detailsModal .modal-content').html(data);
+                $('#detailsModal').modal('show');
+            },
+            error: function () {
+                alert('Error al cargar los detalles del producto.');
+            }
+        });
+    }
+</script>

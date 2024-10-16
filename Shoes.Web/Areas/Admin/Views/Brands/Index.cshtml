@@ -72,7 +72,7 @@
 					<td>@item.ShoesQuantity</td>
 
 					<td>
-						<a onclick="Delete('/Brands/Delete/@item.BrandId',@item.BrandId,'@item.BrandName.Replace("'"," \\'")')" class="btn btn-danger">
+						<a onclick="Delete('/Admin/Brands/Delete/@item.BrandId',@item.BrandId,'@item.BrandName.Replace("'"," \\'")')" class="btn btn-danger">
 							<i class="bi bi-trash-fill"></i>Delete
 						</a>
 						<a asp-controller="Brands" asp-action="UpSert" asp-route-id="@item.BrandId" class="btn btn-warning">
@@ -94,7 +94,7 @@
 	</tbody>
 </table>
 <partial name="_Pager" model="@Model" />
-</div>
+
 @section Scripts{
 	<script src="~/lib/jquery/dist/jquery.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

@@ -1,6 +1,5 @@
 ﻿@model IPagedList<SizeListVm>
 @using X.PagedList
-@using X.PagedList
 
 @{
 	ViewData["Tittle"] = "Size List";
@@ -32,7 +31,7 @@
 				<tr id="@item.SizeId">
 					<td>@item.SizeNumber</td>
 					<td>
-						<a onclick="Delete('/Sizes/Delete/@item.SizeId',@item.SizeId,'@item.SizeNumber')" class="btn btn-danger">
+						<a onclick="Delete('/Admin/Sizes/Delete/@item.SizeId',@item.SizeId,'@item.SizeNumber')" class="btn btn-danger">
 							<i class="bi bi-trash-fill"></i>
 							Delete
 						</a>

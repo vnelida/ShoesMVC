@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Shoes.Entidades;
 
 namespace Shoes.Web.ViewModels.Shoes
 {
-    public class ShoeHomeIndexVm
+    public class ShoeHomeDetailsVm
     {
         public int ShoeId { get; set; }
         public string Model { get; set; } = null!;
@@ -10,7 +10,7 @@ namespace Shoes.Web.ViewModels.Shoes
         public decimal Price { get; set; }
         public decimal CashPrice { get; set; }
         public string? ImageUrl { get; set; }
-        [DisplayName(displayName: "Color")]
+        public List<ShoeSize> ShoeSize { get; set; } = null!;
         public string ColorN { get; set; } = null!;
         public string Brand { get; set; } = null!;
         public string Sport { get; set; } = null!;
