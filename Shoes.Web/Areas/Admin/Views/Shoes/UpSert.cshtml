@@ -20,6 +20,7 @@
             <h2 class="text-info pl-3">@(Model.ShoeId == 0 ? "Add Shoe" : "Edit Shoe")</h2>
             <input type="hidden" asp-for="ShoeId" />
             <input type="hidden" asp-for="ImageUrl" />
+            <input type="hidden" asp-for="ReturnUrl" />
 
         </div>
         <div class="row">
@@ -119,7 +120,7 @@
             </button>
 
         }
-        <a asp-action="Index" class="btn btn-success btn-block">
+        <a asp-action="Index" class="btn btn-success btn-block" asp-route-returnUrl="@(Context.Request.Path+Context.Request.QueryString)">
             <i class="bi bi-backspace"></i>
             Back to List
         </a>

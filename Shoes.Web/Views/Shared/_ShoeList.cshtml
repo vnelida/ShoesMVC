@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ShoeListVm>
+@using X.PagedList
+
+<table class="table table-bordered table-hover w-100 mt-4">
+    <thead>
+        <tr>
+            <th style="width: 12%">Model</th>
+            <th style="width: 18%">Description</th>
+            <th style="width: 10%">Brand</th>
+            <th style="width: 10%">Color</th>
+            <th style="width: 10%">Sport</th>
+            <th style="width: 10%">Genre</th>
+            <th style="width: 8%">Price</th>
+            <th style="width: 29%">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr id="@item.ShoeId">
+                    <td>
+                        @item.Model
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.Brand
+                    </td>
+                    <td>
+                        @item.ColorN
+                    </td>
+                    <td>
+                        @item.Sport
+                    </td>
+                    <td>
+                        @item.Genre
+                    </td>
+                    <td style="text-align:right">
+                        @item.Price.ToString("C2")
+                    </td>
+                    <td>
+                        <a onclick="Delete('/Admin/Shoes/Delete/@item.ShoeId',@item.ShoeId,'@item.Model.Replace("'"," \\'")')" class="btn btn-danger">
+                            <i class="bi bi-trash-fill"></i>
+                            Delete
+                        </a>
+                        <a asp-controller="Shoes" asp-action="UpSert" asp-route-id="@item.ShoeId" class="btn btn-warning"
+                        asp-route-returnUrl="@(Context.Request.Path+Context.Request.QueryString)">
+                            <i class="bi bi-pencil-square"></i>Edit
+                        </a>
+                        <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ShoeId" asp-route-returnUrl="@(Context.Request.Path+Context.Request.QueryString)" class="btn btn-info">
+                            <i class="bi bi-card-list"></i>Sizes
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>Record not found</td>
+            </tr>
+        }
+    </tbody>
+</table>

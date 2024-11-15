@@ -2,21 +2,22 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 
-<div class="bg-light border p-3 shadow">
+<div id="detailsContainer">
+<div id="sizesTableContainer" class=" bg-light border p-3 shadow">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4>@Model.Model</h4>
         <div>
             <a href="@(ViewBag.ReturnUrl??Url.Action("Index","Shoes"))" class="btn btn-danger me-3">
                 <i class="bi bi-backspace"></i> Back to List
             </a>
-            <a href="#" onclick="openAddSizeModal(@Model.ShoeId,@ViewBag.ReturnUrl)" class="btn btn-primary">
+            <a href="#" onclick="openAddSizeModal(@Model.ShoeId)" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Add Size
             </a>
         </div>
     </div>
 
     <hr />
-    <table class="table table-bordered table-hover mt-3">
+    <table id="sizesTable" class="table table-bordered table-hover mt-3">
         <thead>
             <tr>
                 <th>Aviable Size</th>
@@ -33,9 +34,9 @@
                         <td>@item.SizeN.SizeNumber</td>
                         <td>@item.QuantityInStock</td>
                         <td>
-                            <a class="btn btn-warning" asp-action="UpSert" asp-route-id="@item.ShoeSizeId">
-                                <i class="bi bi-pencil-square"></i> Edit
-                            </a>
+                            <button class="btn btn-warning" onclick="openModal(@item.ShoeSizeId, @item.QuantityInStock)">
+                                Edit
+                            </button>
                         </td>
                     </tr>
                 }
@@ -50,6 +51,32 @@
     </table>
     
 </div>
+<!--modal stock-->
+<div class="modal" id="stockModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <form id="updateStockForm" action="@Url.Action("UpdateStock", "Shoes")" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Stock</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Current Stock: <span id="currentStock"></span></p>
+                    <input type="hidden" name="shoeSizeId" id="shoeSizeId" />
+                    <input type="number" name="newStock" class="form-control" min="0" placeholder="Stock" required /> 
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" >Confirm</button> 
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--modal shoeSize-->
 <div class="modal fade" id="shoeSizeModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content">
@@ -57,25 +84,84 @@
         </div>
     </div>
 </div>
+</div>
 <script>
-    function openAddSizeModal(shoeId,returnUrl) {
-        console.log(returnUrl)
-        debugger;
+    function openAddSizeModal(shoeId) {
         $.ajax({
             url: '@Url.Action("UpsertShoeSize", "Shoes")',
             type: 'GET',
-            data: { shoeId: shoeId, returnUrl:returnUrl },
+            data: { shoeId: shoeId },
             success: function (data) {
                 $('#shoeSizeModal .modal-content').html(data);
-                $('#shoeSizeModal').modal('show');
+                $('#shoeSizeModal').modal('show');   
+                
             },
             error: function () {
-                alert('Error al cargar el formulario para agregar talla.');
+                alert('Error loading the form..');
             }
         });
     }
+    
 </script>
 
+<script>
+    // Maneja la apertura del modal y asigna valores
+    function openModal(shoeSizeId, currentStock) {
+        document.getElementById('currentStock').innerText = currentStock; // Mostrar stock actual
+        document.getElementById('shoeSizeId').value = shoeSizeId; // Asignar ID de la talla
+        $('#stockModal').modal('show'); // Abrir el modal
+    }
 
+    // Cerrar el modal al hacer clic en elementos específicos
+    $('#stockModal').on('click', '.close, .btn-secondary', function () {
+        $('#stockModal').modal('hide'); // Cerrar el modal
+    });
+
+    // Validar y enviar el formulario con AJAX
+    $('#updateStockForm').on('submit', function (event) {
+        event.preventDefault(); // Evitar el envío tradicional
+
+        // Enviar el formulario con AJAX
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (data) {
+                if (data.success) {
+                    $('#stockModal').modal('hide'); // Cerrar modal al finalizar
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: data.message, // Mostrar mensaje del controlador
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    // Recargar la tabla para reflejar los cambios
+                    $('#sizesTableContainer').load(window.location.href + " #sizesTableContainer > *");
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was a problem updating the stock.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+</script>
+@* 
+ <script>
+    function openModal(shoeSizeId, currentStock) {
+        document.getElementById('currentStock').innerText = currentStock;
+        document.getElementById('shoeSizeId').value = shoeSizeId; 
+        $('#stockModal').modal('show'); 
+    } 
+    $('#stockModal').on('click', '.close, .btn-secondary', function () {
+        $('#stockModal').modal('hide');
+    });
+</script> *@
 
 

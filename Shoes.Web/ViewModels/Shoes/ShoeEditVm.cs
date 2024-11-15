@@ -58,6 +58,7 @@ namespace Shoes.Web.ViewModels.Shoes
 		public List<SelectListItem> Genres { get; set; } = null!;
 		[ValidateNever]
 		public List<SelectListItem> Sports { get; set; } = null!;
+        public string? ReturnUrl { get; set; }
 
-	}
+    }
 }

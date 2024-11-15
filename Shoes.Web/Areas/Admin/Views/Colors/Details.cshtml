@@ -29,7 +29,9 @@
         Back to List
     </a>
 </div>
-<table class="table table-bordered table-hover mt-3">
+<partial name="_ShoeList" model="@Model.Shoes" />
+
+@* <table class="table table-bordered table-hover mt-3">
     <thead>
         <tr>
             <th style="width:15%">Model</th>
@@ -95,7 +97,8 @@
         }
     </tbody>
 </table>
-@* <div class="d-flex">
+ *@
+ @* <div class="d-flex">
     @Html.PagedListPager(Model.Shoes, page => Url.Action("Details",
             new
             {
